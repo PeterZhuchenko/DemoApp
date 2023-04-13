@@ -1,5 +1,6 @@
 ﻿using API.DTOs;
 using API.Entities;
+using API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -8,34 +9,45 @@ namespace API.Controllers;
 [Route("[controller]")]
 public class CustomersController : ControllerBase
 {
+    private readonly ICustomersService _customersService;
+
+    public CustomersController(ICustomersService customersService)
+    {
+        _customersService = customersService;
+    }
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
     {
-        throw new NotImplementedException();
+        var customers = await _customersService.GetCustomers();
+
+        return Ok(customers);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<IEnumerable<Customer>>> GetCustomer(Guid id)
+    public async Task<ActionResult<Customer>> GetCustomer(Guid id)
     {
-        throw new NotImplementedException();
+        var customer = await _customersService.GetCustomerById(id);
+
+        return Ok(customer);
     }
 
     [HttpPost]
-    public async Task<ActionResult> CreateCustomer(CreateCustomerDto customer)
+    public async Task CreateCustomer(CreateCustomerDto customer)
     {
-        throw new NotImplementedException();
+        await _customersService.CreateCustomer(customer);
     }
     
     [HttpPut]
-    public async Task<ActionResult> UpdateCustomer(UpdateCustomerDto customer)
+    public async Task UpdateCustomer(UpdateCustomerDto customer)
     {
-        throw new NotImplementedException();
+        await _customersService.UpdateCustomer(customer);
     }
     
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteCustomer(Guid id)
+    public async Task DeleteCustomer(Guid id)
     {
-        throw new NotImplementedException();
+        await _customersService.DeleteCustomer(id);
     }
 
 }

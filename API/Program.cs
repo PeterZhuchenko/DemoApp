@@ -1,4 +1,6 @@
 using API.Data;
+using API.Services.Implementations;
+using API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder(args);
@@ -13,6 +15,8 @@ builder.Services.AddDbContext<DataContext>(opt =>
 {
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddScoped<ICustomersService, CustomersService>();
 
 var app = builder.Build();
 
