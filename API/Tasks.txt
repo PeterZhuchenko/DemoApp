@@ -1,0 +1,5 @@
+
+2. Search service based on stored procedures
+    2a. SearchService has to contain - Sorting, Search by all fields, Pagination.
+    2b. 
+3. Change db to postgre

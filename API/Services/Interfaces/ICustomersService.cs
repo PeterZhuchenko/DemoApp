@@ -10,5 +10,7 @@ public interface ICustomersService
     Task CreateCustomer(CreateCustomerDto customer);
     Task UpdateCustomer(UpdateCustomerDto customer);
     Task DeleteCustomer(Guid id);
+    
+    Task<IEnumerable<Customer>> Search(string query);
 
 }

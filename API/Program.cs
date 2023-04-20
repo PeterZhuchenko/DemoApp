@@ -1,4 +1,5 @@
 using API.Data;
+using API.ErrorHandling;
 using API.Services.Implementations;
 using API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,10 @@ builder.Services.AddDbContext<DataContext>(opt =>
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<ICustomersService, CustomersService>();
 
+
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionsMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

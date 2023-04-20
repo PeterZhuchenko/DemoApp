@@ -2,8 +2,7 @@
 using API.Entities;
 using AutoMapper;
 
-
-namespace DatingApp.Helpers;
+namespace API.Helpers;
 
 public class AutoMapperProfiles : Profile
 {

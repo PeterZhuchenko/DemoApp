@@ -29,6 +29,11 @@ public class CustomersController : ControllerBase
     {
         var customer = await _customersService.GetCustomerById(id);
 
+        if (customer == null)
+        {
+            return NotFound("Customer not found.");
+        }
+
         return Ok(customer);
     }
 
@@ -48,6 +53,14 @@ public class CustomersController : ControllerBase
     public async Task DeleteCustomer(Guid id)
     {
         await _customersService.DeleteCustomer(id);
+    }
+
+    [HttpGet("search")]
+    public async Task<ActionResult<IEnumerable<Customer>>> Search(string searchString)
+    {
+        var result = await _customersService.Search(searchString);
+
+        return Ok(result);
     }
 
 }
