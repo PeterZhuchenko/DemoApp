@@ -2,6 +2,7 @@
 using API.DTOs;
 using API.Entities;
 using API.ErrorHandling;
+using API.Helpers;
 using API.Services.Interfaces;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -19,9 +20,12 @@ public class CustomersService : ICustomersService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<Customer>> GetCustomers()
+    public async Task<PagedList<Customer>> GetCustomers(UserParams userParams)
     {
-        return await _context.Customers.ToListAsync();
+        var query =  _context.Customers
+            .AsNoTracking();
+
+        return await PagedList<Customer>.CreateAsync(query, userParams.PageNumber, userParams.PageSize);
     }
 
     public async Task<Customer> GetCustomerById(Guid id)
@@ -66,7 +70,7 @@ public class CustomersService : ICustomersService
 
         if (customer == null)
         {
-            throw new Exception("Customer not found");
+            throw new NotFoundException("Customer not found");
         }
         
         _context.Remove(customer);
@@ -75,14 +79,19 @@ public class CustomersService : ICustomersService
 
     public async Task<IEnumerable<Customer>> Search(string query)
     {
-        /*var stringProperties = typeof(Customer).GetProperties().Where(prop =>
+        var stringProperties = typeof(Customer).GetProperties().Where(prop =>
             prop.PropertyType == query.GetType());
        
+        // Super variant, but does not work. Fails with exception
+        //System.ArgumentException: Expression of type 'System.String' cannot be used for parameter of type 'System.Reflection.PropertyInfo' of method 'Boolean Contains[PropertyInfo](System.Collections.Generic.IEnumerable`1[System.Reflection.PropertyInfo], System.Reflection.PropertyInfo)' (Parameter 'arg1')
         var res = await  _context.Customers.Where(customer => 
             stringProperties.Any(prop => (string) prop.GetValue(customer)! == query)).ToListAsync();
-            */
         
-        // not the best decision. Violates OCP. Needs to be refactored. 
+        //This variant works, but what if I have 1billion customers. It can be problem.
+        var customers = await _context.Customers.ToArrayAsync();
+        var searchedCustomers = customers.Where(customer => stringProperties.Any(prop => (string) prop.GetValue(customer)! == query));
+
+        // Initial variant. Works fine, but violates OCP. Every time I change customer entity I will have to change this query.
         var result = await _context.Customers.Where(x =>
             x.Name == query ||
             x.CompanyName == query ||

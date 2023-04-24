@@ -9,9 +9,9 @@ public class ApiException
         Details = details;
     }
 
-    public int StatusCode { get; set; }
-    public string Message { get; set; }
-    public string Details { get; set; }
+    private int StatusCode { get; set; }
+    private string Message { get; set; }
+    private string Details { get; set; }
     
     
 }

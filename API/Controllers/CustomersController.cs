@@ -1,5 +1,7 @@
 ﻿using API.DTOs;
 using API.Entities;
+using API.Extensions;
+using API.Helpers;
 using API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,9 +19,11 @@ public class CustomersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+    public async Task<ActionResult<PagedList<Customer>>> GetCustomers([FromQuery]UserParams userParams)
     {
-        var customers = await _customersService.GetCustomers();
+        var customers = await _customersService.GetCustomers(userParams);
+        
+        Response.AddPaginationHeader(new PaginationHeader(customers.CurrentPage, customers.PageSize, customers.TotalCount, customers.TotalPages));
 
         return Ok(customers);
     }
@@ -56,7 +60,7 @@ public class CustomersController : ControllerBase
     }
 
     [HttpGet("search")]
-    public async Task<ActionResult<IEnumerable<Customer>>> Search(string searchString)
+    public async Task<ActionResult<IEnumerable<Customer>>> Search([FromQuery]string searchString)
     {
         var result = await _customersService.Search(searchString);
 

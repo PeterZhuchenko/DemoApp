@@ -1,11 +1,12 @@
 ﻿using API.DTOs;
 using API.Entities;
+using API.Helpers;
 
 namespace API.Services.Interfaces;
 
 public interface ICustomersService
 {
-    Task<IEnumerable<Customer>> GetCustomers();
+    Task<PagedList<Customer>> GetCustomers(UserParams userParams);
     Task<Customer> GetCustomerById(Guid id);
     Task CreateCustomer(CreateCustomerDto customer);
     Task UpdateCustomer(UpdateCustomerDto customer);

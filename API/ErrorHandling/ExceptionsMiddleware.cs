@@ -36,12 +36,11 @@ public class ExceptionsMiddleware
 
     private async Task NotFoundException(Exception e, HttpContext context)
     {
-        
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int) HttpStatusCode.NotFound;
 
         var response = _env.IsDevelopment()
-            ? new ApiException(context.Response.StatusCode, e.Message, e.StackTrace?.ToString())
+            ? new ApiException(context.Response.StatusCode, e.Message, e.StackTrace)
             : new ApiException(context.Response.StatusCode, e.Message, "Entity not found.");
 
         var options = new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase};
